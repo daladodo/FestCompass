@@ -1,0 +1,407 @@
+```html
+<!DOCTYPE html>
+<html lang=”zh-Hant”>
+<head>
+  <meta charset=”UTF-8” />
+  <meta name=”viewport” content=”width=device-width, initial-scale=1.0, maximum-scale=5.0” />
+  <title>FestCompass｜音樂祭團序排程＆樂團指南</title>
+  <script src=https://cdn.tailwindcss.com/3.4.17></script>
+  <link rel=”preconnect” href=https://fonts.googleapis.com>
+  <link rel=”preconnect” href=https://fonts.gstatic.com crossorigin>
+  <link href=https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@600;700&family=Syne:wght@700;800&display=swap rel=”stylesheet”>
+  <style>
+    :root {
+      --bg-dark: #090a0f;
+      --card-dark: #12141c;
+      --border-dark: #222634;
+    }
+    Body {
+      Font-family: ‘Inter’, ‘Noto Sans TC’, sans-serif;
+      Background-color: #090a0f;
+      Color: #f1f5f9;
+      Overflow-x: hidden;
+      -webkit-touch-callout: none;
+    }
+    
+    /* Instant FestCompass Splash Screen */
+    #festCompassSplash {
+      Position: fixed;
+      Inset: 0;
+      z-index: 9999;
+      background-color: #090a0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    #festCompassSplash.splash-hidden {
+      Opacity: 0;
+      Visibility: hidden;
+      Pointer-events: none;
+    }
+    .splash-logo-row {
+      Display: flex;
+      Align-items: baseline;
+      Font-family: ‘Syne’, ‘Space Grotesk’, system-ui, sans-serif;
+      Font-weight: 800;
+      Font-size: 2.25rem;
+      Letter-spacing: -0.04em;
+    }
+    .splash-bar-track {
+      Width: 180px;
+      Height: 3px;
+      Background: #1e2330;
+      Border-radius: 999px;
+      Overflow: hidden;
+      Margin-top: 18px;
+    }
+    .splash-bar-fill {
+      Height: 100%;
+      Width: 45%;
+      Background: #fbbf24;
+      Border-radius: 999px;
+      Animation: splashSlide 0.85s infinite ease-in-out;
+    }
+    @keyframes splashSlide {
+      0% { transform: translateX(-100%); width: 45%; }
+      50% { width: 70%; }
+      100% { transform: translateX(260%); width: 45%; }
+    }
+
+    /* Brand Wordmark Typography */
+    .brand-wordmark {
+      Font-family: ‘Syne’, ‘Space Grotesk’, sans-serif;
+      Letter-spacing: -0.04em;
+      Font-weight: 800;
+    }
+    .brand-mono {
+      Font-family: ‘Space Grotesk’, monospace;
+      Letter-spacing: 0.14em;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0d0f17; }
+    ::-webkit-scrollbar-thumb { background: #2e3446; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475069; }
+
+    /* Select Dropdown Reset & Styling */
+    .nav-select {
+      Appearance: none;
+      Background-image: url(“data:image/svg+xml,%3Csvg xmlns=’http://www.w3.org/2000/svg’ width=’12’ height=’12’ viewBox=’0 0 24 24’ fill=’none’ stroke=’%2394a3b8’ stroke-width=’2.5’ stroke-linecap=’round’ stroke-linejoin=’round’%3E%3Cpath d=’m6 9 6 6 6-6’/%3E%3C/svg%3E”);
+      Background-repeat: no-repeat;
+      Background-position: right 0.65rem center;
+      Padding-right: 2rem;
+    }
+
+    /* Poster Hotspot Styles — ZERO covering badges/icons inside! Pure border & spotlight */
+    .poster-hotspot {
+      Position: absolute;
+      Border-radius: 5px;
+      Cursor: pointer;
+      Transition: box-shadow 0.16s ease, background-color 0.16s ease, transform 0.15s ease;
+      User-select: none;
+      -webkit-user-select: none;
+      Box-sizing: border-box;
+    }
+    .poster-hotspot:hover {
+      Box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+      Background-color: rgba(255, 255, 255, 0.06);
+      z-index: 20;
+    }
+    /* Visual feedback when long-pressing a block */
+    .holding-press {
+      Transform: scale(0.97);
+      Box-shadow: 0 0 0 3px #38bdf8, 0 0 18px rgba(56, 189, 248, 0.9) !important;
+      z-index: 35 !important;
+    }
+    /* Dimmed unselected bands when spotlight mode is on */
+    .spotlight-active .poster-hotspot.unselected {
+      Background-color: rgba(7, 8, 12, 0.72);
+      Backdrop-filter: grayscale(70%);
+    }
+    /* Selected band: completely transparent center so band name is 100% clear, glowing outer frame */
+    .poster-hotspot.selected {
+      Background-color: transparent;
+      Box-shadow: 0 0 0 2.5px #fbbf24, 0 0 16px rgba(251, 191, 36, 0.9);
+      z-index: 25;
+    }
+    /* Clash band: pulsing red/amber outer frame, transparent center */
+    .poster-hotspot.selected.clash {
+      Background-color: transparent;
+      Box-shadow: 0 0 0 3px #ef4444, 0 0 20px rgba(239, 68, 68, 0.95);
+      Animation: clashPulse 1.5s infinite ease-in-out;
+      z-index: 30;
+    }
+    @keyframes clashPulse {
+      0%, 100% { box-shadow: 0 0 0 3px #ef4444, 0 0 18px rgba(239, 68, 68, 0.95); }
+      50% { box-shadow: 0 0 0 3px #fbbf24, 0 0 22px rgba(251, 191, 36, 0.95); }
+    }
+
+    /* Panorama Clean Mode Card Styles */
+    .pano-card {
+      Position: absolute;
+      Left: 3px;
+      Right: 3px;
+      Border-radius: 6px;
+      Cursor: pointer;
+      User-select: none;
+      -webkit-user-select: none;
+      Transition: all 0.15s ease;
+      Overflow: hidden;
+      Display: flex;
+      Flex-direction: column;
+      Justify-content: center;
+      Padding: 3px 6px;
+      Background-color: #141722;
+      Border: 1px solid #262b3d;
+    }
+    .pano-card:hover {
+      Border-color: #94a3b8;
+      z-index: 20;
+    }
+    .spotlight-active .pano-card.unselected {
+      Opacity: 0.32;
+      Filter: grayscale(65%);
+    }
+    .pano-card.selected {
+      Background-color: rgba(251, 191, 36, 0.16);
+      Border: 1.5px solid #fbbf24;
+      Box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+      z-index: 25;
+    }
+    .pano-card.selected.clash {
+      Background-color: rgba(239, 68, 68, 0.2);
+      Border: 1.5px solid #ef4444;
+      Box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
+      z-index: 30;
+    }
+  </style>
+</head>
+<body class=”min-h-screen flex flex-col selection:bg-amber-400 selection:text-slate-950”>
+
+  <!—Instant FestCompass Branded Loading Screen 
+  <div id=”festCompassSplash”>
+    <div class=”splash-logo-row”>
+      <span style=”color:#ffffff;”>FEST</span>
+      <span style=”color:#fbbf24;”>COMPASS</span>
+      <span style=”width:8px;height:8px;border-radius:999px;background:#fbbf24;margin-left:5px;display:inline-block;”></span>
+    </div>
+    <div style=”font-family:monospace;font-size:11px;letter-spacing:0.2em;color:#64748b;margin-top:6px;”>
+      TIMETABLE &amp; ARTIST GUIDE
+    </div>
+    <div class=”splash-bar-track”>
+      <div class=”splash-bar-fill”></div>
+    </div>
+    <div id=”splashStatusText” style=”font-size:12px;color:#94a3b8;margin-top:12px;”>
+      正在載入 2026 浪人祭・火球祭 團序與樂團指南…
+    </div>
+  </div>
+
+
+  <!—Top Navigation Bar: Custom FestCompass Typography + Unified Dropdown Controls 
+  <header class=”border-b border-slate-800/90 bg-[#090a0f]/95 backdrop-blur-md sticky top-0 z-40”>
+    <div class=”max-w-7xl mx-auto px-3 sm:px-6 py-3”>
+      <div class=”flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3”>
+
+        <!—Brand Wordmark: FestCompass 
+        <div class=”flex items-center justify-between”>
+          <div class=”flex items-baseline gap-3”>
+            <div class=”flex items-baseline select-none”>
+              <span class=”brand-wordmark text-xl sm:text-2xl text-white tracking-tight”>FEST</span>
+              <span class=”brand-wordmark text-xl sm:text-2xl text-amber-400 tracking-tight”>COMPASS</span>
+              <span class=”w-1.5 h-1.5 rounded-full bg-amber-400 ml-1 mb-1”></span>
+            </div>
+            <span class=”brand-mono text-[10px] text-slate-500 uppercase hidden sm:inline-block border-l border-slate-800 pl-3”>
+              TIMETABLE &amp; ARTIST GUIDE
+            </span>
+          </div>
+
+          <div class=”flex items-center gap-2 lg:hidden”>
+            <span id=”headerSavedBadgeMobile” class=”text-[11px] text-slate-500 font-mono”>AUTO-SAVED</span>
+          </div>
+        </div>
+
+        <!—Unified Dropdown Control Bar (音樂祭、日期、檢視模式、功能選單) 
+        <div class=”flex flex-wrap items-center gap-2”>
+          <!—1. Festival Dropdown 
+          <div class=”flex items-center bg-[#12141c] border border-slate-800 rounded-lg px-2.5 py-1”>
+            <span class=”text-[11px] text-slate-400 mr-1.5 font-medium shrink-0”>音樂祭</span>
+            <select id=”festivalSelectDropdown” aria-label=”選擇音樂祭” class=”nav-select bg-transparent text-xs sm:text-sm font-bold text-white focus:outline-none cursor-pointer”>
+              <!—Populated by JS 
+            </select>
+          </div>
+
+          <!—2. Day Dropdown 
+          <div class=”flex items-center bg-[#12141c] border border-slate-800 rounded-lg px-2.5 py-1”>
+            <span class=”text-[11px] text-slate-400 mr-1.5 font-medium shrink-0”>日期</span>
+            <select id=”daySelectDropdown” aria-label=”選擇日期” class=”nav-select bg-transparent text-xs sm:text-sm font-bold text-amber-300 focus:outline-none cursor-pointer”>
+              <!—Populated by JS 
+            </select>
+          </div>
+
+          <!—3. View Mode Dropdown (Now includes 全景極簡模式!) 
+          <div class=”flex items-center bg-[#12141c] border border-slate-800 rounded-lg px-2.5 py-1”>
+            <span class=”text-[11px] text-slate-400 mr-1.5 font-medium shrink-0”>模式</span>
+            <select id=”viewModeSelectDropdown” aria-label=”選擇檢視模式” class=”nav-select bg-transparent text-xs sm:text-sm font-bold text-white focus:outline-none cursor-pointer”>
+              <option value=”panorama” class=”bg-slate-900 text-white”>全景模式（乾淨團序表）</option>
+              <option value=”poster” class=”bg-slate-900 text-white”>海報點亮模式（原圖）</option>
+              <option value=”grid” class=”bg-slate-900 text-white”>舞台時間表＆曲風篩選</option>
+              <option value=”mylist” id=”viewModeMyListOption” class=”bg-slate-900 text-white”>我的行程清單 (0)</option>
+            </select>
+          </div>
+
+                    <!—Quick Export Poster Image & Share Button 
+          <button id=”quickExportImageBtn” type=”button” class=”px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition”>
+            匯出點亮海報＆分享
+          </button>
+
+          <!—4. More Actions Dropdown 
+          <div class=”relative”>
+            <button id=”moreMenuToggleBtn” type=”button” class=”px-3 py-1.5 rounded-lg bg-[#12141c] hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition”>
+              <span>功能選單</span>
+              <span class=”text-[10px] text-slate-400”>▾</span>
+            </button>
+            <div id=”moreMenuDropdown” class=”hidden absolute right-0 mt-1.5 w-48 rounded-xl bg-[#141722] border border-slate-700 shadow-2xl py-1.5 z-50 text-xs”>
+              <button id=”openSearchAddModalBtn” type=”button” class=”w-full text-left px-3.5 py-2 hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between”>
+                <span>新增／搜尋音樂祭</span>
+                <span class=”text-slate-500”>+</span>
+              </button>
+              <button id=”openExportModalBtn” type=”button” class=”w-full text-left px-3.5 py-2 hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between”>
+                <span>匯出／分享行程清單</span>
+                <span class=”text-slate-500”>↗</span>
+              </button>
+              <label class=”w-full text-left px-3.5 py-2 hover:bg-slate-800 text-slate-200 font-medium flex items-center justify-between cursor-pointer”>
+                <span>更換本日海報底圖</span>
+                <input type=”file” id=”uploadPosterInput” accept=”image/*” class=”hidden” />
+              </label>
+              <div class=”my-1 border-t border-slate-800”></div>
+              <button id=”clearDaySelectionBtn” type=”button” class=”w-full text-left px-3.5 py-2 hover:bg-rose-950/50 text-rose-300 font-medium”>
+                清空本日已點亮樂團
+              </button>
+            </div>
+          </div>
+
+          <span id=”headerSavedBadge” class=”hidden xl:inline-block text-[11px] text-slate-500 font-mono ml-1”>AUTO-SAVED</span>
+        </div>
+      </div>
+
+      <!—Hidden compatibility elements 
+      <div id=”festivalTabsContainer” class=”hidden”></div>
+      <div id=”dayTabsContainer” class=”hidden”></div>
+      <div class=”hidden”>
+        <select id=”tapActionSelectDropdown”><option value=”light”>點亮排程</option><option value=”info”>看介紹</option></select>
+        <button id=”viewModePosterBtn” type=”button”>海報點亮模式</button>
+        <button id=”viewModeGridBtn” type=”button”>舞台時間表＆篩選</button>
+        <button id=”viewModeMyListBtn” type=”button”>我的行程 <span id=”myCountBadge”>0</span></button>
+        <button id=”clickActionLightBtn” type=”button”>點亮排程</button>
+        <button id=”clickActionInfoBtn” type=”button”>先開介紹卡</button>
+      </div>
+    </div>
+  </header>
+
+  <!—Main Content Area 
+  <main class=”flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 space-y-3”>
+
+    <!—Clean Metadata & Gesture Guide Strip 
+    <section class=”rounded-xl border border-slate-800/90 bg-[#11131a] px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs”>
+      <div class=”flex flex-wrap items-center gap-2.5”>
+        <span id=”bannerFestTag” class=”font-bold text-white”>2026 浪人祭</span>
+        <span class=”text-slate-600”>/</span>
+        <span id=”bannerDateLocation” class=”text-slate-400”>2026/11/07 – 11/08・臺南安平觀夕平臺旁大草皮</span>
+        <a id=”bannerOfficialLink” href=https://www.vagabondfest.com/ target=”_blank” rel=”noopener noreferrer” class=”text-amber-400 hover:underline font-medium”>官方網站 ↗</a>
+        <span id=”currentFestSubtitle” class=”hidden”></span>
+      </div>
+
+      <div class=”flex flex-wrap items-center gap-3”>
+        <div class=”flex items-center gap-2 text-slate-300 bg-[#090a0f] px-2.5 py-1 rounded-md border border-slate-800”>
+          <span><strong class=”text-amber-400”>點一下</strong>：點亮排程</span>
+          <span class=”text-slate-600”>｜</span>
+          <span><strong class=”text-sky-400”>長按團體</strong>：看樂團介紹＆YouTube試聽</span>
+        </div>
+        <div id=”clashAlertPill” class=”hidden px-2.5 py-1 rounded-md bg-rose-500/15 border border-rose-500/40 text-rose-300 font-semibold cursor-pointer”>
+          <span id=”clashAlertText”>發現撞團時段</span>
+        </div>
+      </div>
+    </section>
+
+    <!—VIEW 0: PANORAMA CLEAN MODE (全景模式：乾淨極簡一覽表) 
+    <section id=”panoramaViewSection” class=”hidden space-y-3”>
+      <div class=”flex flex-wrap items-center justify-between gap-3 bg-[#11131a] border border-slate-800/90 rounded-xl px-3.5 py-2”>
+        <div class=”flex flex-wrap items-center gap-3”>
+          <label class=”inline-flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer select-none”>
+            <input type=”checkbox” id=”panoSpotlightToggle” checked class=”rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-0” />
+            <span>聚光燈效果（未選變暗）</span>
+          </label>
+          <button id=”switchToPosterQuickBtn” type=”button” class=”text-xs text-slate-400 hover:text-white underline underline-offset-4”>
+            切換至原圖海報模式
+          </button>
+        </div>
+
+        <div class=”flex items-center gap-1.5 text-xs”>
+          <span class=”text-slate-400”>全景高度：</span>
+          <button id=”panoDensityCompactBtn” type=”button” class=”px-2.5 py-1 rounded font-semibold bg-amber-400 text-slate-950”>一頁全覽 (緊湊)</button>
+          <button id=”panoDensityComfortBtn” type=”button” class=”px-2.5 py-1 rounded font-semibold bg-slate-800 text-slate-300 hover:text-white”>舒適展開</button>
+        </div>
+      </div>
+
+      <!—Clean Panorama Matrix Container 
+      <div class=”w-full overflow-x-auto rounded-xl border border-slate-800 bg-[#0b0d14] p-2 sm:p-4”>
+        <div id=”panoramaStageCanvas” class=”min-w-[680px]”></div>
+      </div>
+    </section>
+
+    <!—VIEW 1: POSTER HOTSPOT VIEW (原圖海報點亮模式) 
+    <section id=”posterViewSection” class=”space-y-3”>
+      <!—Poster Toolbar: Spotlight & Working Zoom Controls 
+      <div class=”flex flex-wrap items-center justify-between gap-3 bg-[#11131a] border border-slate-800/90 rounded-xl px-3.5 py-2”>
+        <div class=”flex flex-wrap items-center gap-3”>
+          <label class=”inline-flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer select-none”>
+            <input type=”checkbox” id=”spotlightToggle” checked class=”rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-0” />
+            <span>聚光燈效果（未選變暗）</span>
+          </label>
+          <button id=”switchToPanoramaQuickBtn” type=”button” class=”text-xs text-amber-400 hover:text-amber-300 underline underline-offset-4 font-medium”>
+            切換至全景乾淨模式
+          </button>
+        </div>
+
+        <!—Working Zoom Controls (- / Slider / + / Presets) 
+        <div class=”flex flex-wrap items-center gap-1.5”>
+          <span class=”text-xs text-slate-400 mr-1”>畫面縮放</span>
+          <button id=”zoomOutBtn” type=”button” class=”w-7 h-7 rounded-md bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center justify-center transition” title=”縮小”>−</button>
+          <input id=”zoomRangeSlider” type=”range” min=”80” max=”220” step=”5” value=”100” class=”w-24 sm:w-28 accent-amber-400 cursor-pointer” />
+          <button id=”zoomInBtn” type=”button” class=”w-7 h-7 rounded-md bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center justify-center transition” title=”放大”>＋</button>
+          <span id=”zoomValueLabel” class=”text-xs font-mono font-bold text-amber-400 w-12 text-center”>100%</span>
+          <div class=”flex items-center gap-1 ml-1 border-l border-slate-800 pl-2”>
+            <button type=”button” data-zoom=”100” class=”zoom-btn px-2 py-1 rounded text-[11px] font-semibold bg-amber-400 text-slate-950”>100%</button>
+            <button type=”button” data-zoom=”135” class=”zoom-btn px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-slate-300 hover:text-white”>135%</button>
+            <button type=”button” data-zoom=”170” class=”zoom-btn px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-slate-300 hover:text-white”>170%</button>
+          </div>
+        </div>
+      </div>
+
+      <!—Scrollable & Zoomable Poster Viewport 
+      <div id=”posterScrollViewport” class=”w-full overflow-auto rounded-xl border border-slate-800 bg-[#07080c] p-2 sm:p-4 max-h-[80vh] cursor-grab active:cursor-grabbing”>
+        <div id=”posterZoomWrapper” class=”mx-auto transition-none” style=”width: 760px;”>
+          <div id=”posterStageCanvas”></div>
+        </div>
+      </div>
+    </section>
+
+    <!—VIEW 2: STRUCTURED STAGE GRID & FILTER VIEW 
+    <section id=”gridViewSection” class=”hidden space-y-4”>
+      <div class=”bg-[#11131a] border border-slate-800 rounded-xl p-3.5 space-y-3”>
+        <div class=”flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5”>
+          <div class=”relative flex-1”>
+            <input id=”artistSearchInput” type=”text” placeholder=”搜尋樂團名稱、曲風、代表歌（例如：落日飛車、龐克、台語、Dragon Ash…）” class=”w-full px-3.5 py-2 rounded-lg bg-[#090a0f] border border-slate-800 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400” />
+            <button id=”clearSearchBtn” type=”button” class=”hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white”>✕</button>
+          </div>
+
+          <div class=”flex items-center gap-2”>
+            <label class=”inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#090a0f] border border-slate-800 text-xs font-semibold text-amber-300 cursor-pointer”>
+              <input type=”checkbox” id=”onlyLitFilterToggle” class=”rounded text-amber-500 focus:ring-0” />
+              <span>只顯示已點亮樂團</span>
+            </label>
+            <button id=”openAddSlotModalBtn” type=”button” class=”px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 
+

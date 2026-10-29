@@ -1895,25 +1895,56 @@
         <button id="closeExportModalBtn" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">✕</button>
       </div>
       <div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs">
-        <div class="flex flex-wrap items-center justify-between gap-2 bg-[#0b0d13] p-3 rounded-xl border border-slate-800">
-          <div class="flex items-center gap-1.5">
-            <span class="text-slate-400 font-medium">匯出圖片樣式：</span>
-            <button id="exportStylePosterBtn" type="button" class="px-2.5 py-1 rounded font-bold bg-amber-400 text-slate-950">原圖海報點亮版</button>
-            <button id="exportStylePanoBtn" type="button" class="px-2.5 py-1 rounded font-semibold bg-slate-800 text-slate-300 hover:text-white">全景乾淨團序版 (IG 4:5)</button>
+        <!-- Export Style & High-Resolution Badge -->
+        <div class="flex flex-wrap items-center justify-between gap-2.5 bg-[#0e1320] p-3 rounded-xl border border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-300 font-bold">海報樣式：</span>
+            <button id="exportStylePosterBtn" type="button" class="px-3 py-1.5 rounded-lg font-bold bg-amber-400 text-slate-950">原圖海報點亮版</button>
+            <button id="exportStylePanoBtn" type="button" class="px-3 py-1.5 rounded-lg font-semibold bg-slate-800 text-slate-200 hover:text-white">全景乾淨團序版 (IG 4:5)</button>
           </div>
-          <div class="flex flex-wrap items-center gap-1.5">
-            <button id="sharePosterNativeBtn" type="button" class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold transition">
-              分享圖片至社群 (IG / Line)
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold">2K 超高解析</span>
+          </div>
+        </div>
+
+        <!-- Social Media & Save to Photos Action Buttons Grid -->
+        <div class="bg-[#121828] border border-slate-700/80 rounded-xl p-3.5 space-y-2.5">
+          <div class="text-xs font-bold text-amber-300 tracking-wide flex items-center justify-between">
+            <span>選擇儲存至手機相簿或分享社群平台：</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" id="saveToPhotosBtn" onclick="window.fcShareToPlatform('save')"
+                    class="py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md transition"
+                    style="background-color:#10b981; color:#064e3b;">
+              <span>💾 存到手機相簿</span>
             </button>
-            <button id="downloadPosterPngBtn" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 transition">
-              下載海報圖片 (.PNG)
+            <button type="button" id="shareToIgBtn" onclick="window.fcShareToPlatform('instagram')"
+                    class="py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 hover:opacity-90 text-white shadow-md transition"
+                    style="background:linear-gradient(45deg,#833ab4,#fd1d1d,#fcb045); color:#ffffff;">
+              <span>📸 Instagram</span>
             </button>
+            <button type="button" id="shareToThreadsRealBtn" onclick="window.fcShareToPlatform('threads')"
+                    class="py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 bg-slate-950 hover:bg-slate-900 text-white border border-slate-700 shadow-md transition"
+                    style="background-color:#090d16; color:#ffffff; border:1px solid #475569;">
+              <span>🧵 Threads</span>
+            </button>
+            <button type="button" id="shareToLineRealBtn" onclick="window.fcShareToPlatform('line')"
+                    class="py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 bg-[#06c755] hover:bg-[#05b34c] text-white shadow-md transition"
+                    style="background-color:#06c755; color:#ffffff;">
+              <span>💬 LINE 分享</span>
+            </button>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button type="button" id="sharePosterNativeBtn" onclick="window.fcShareToPlatform('native')"
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">分享圖片至社群 (IG / Line)</button>
+            <button type="button" id="downloadPosterPngBtn" onclick="window.fcDownloadPosterImage()"
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">下載海報圖片 (.PNG)</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
           <div class="md:col-span-7 bg-[#08090d] border border-slate-800 rounded-xl p-2.5 flex flex-col items-center">
-            <div class="text-[11px] text-slate-400 mb-1.5">預覽點亮海報圖（手機亦可直接長按下方圖片儲存至相簿）</div>
+            <div class="text-[11px] text-slate-400 mb-1.5">預覽 2K 超高解析點亮海報（手機亦可直接長按圖片 ➔「儲存影像／加入照片」存入相簿）</div>
             <canvas id="exportPosterCanvas" class="hidden"></canvas>
             <img id="exportPosterPreviewImg" alt="Exported Highlighted Poster" class="max-h-[360px] w-auto rounded-lg border border-slate-800 shadow-lg object-contain" />
           </div>
@@ -3492,52 +3523,58 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
       if (styleMode === "poster" && resolvePosterImg(day.posterImg)) {
         const img = new Image();
         img.onload = () => {
-          const W = img.naturalWidth || 800;
-          const H = img.naturalHeight || 1000;
+          const baseW = img.naturalWidth || 800;
+          const baseH = img.naturalHeight || 1000;
+          const scale = Math.max(2.0, 1800.0 / baseW);
+          const W = Math.round(baseW * scale);
+          const H = Math.round(baseH * scale);
+          const footerH = Math.round(100 * (scale / 2.0));
           canvas.width = W;
-          canvas.height = H + 56;
+          canvas.height = H + footerH;
           const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
 
-          ctx.fillStyle = "#090a0f";
+          ctx.fillStyle = "#07090e";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, W, H);
 
-          const yBase12 = day.yBase12 || 238.0;
-          const pxPerHour = day.pxPerHour || 62.2;
+          const yBase12 = (day.yBase12 || 238.0) * scale;
+          const pxPerHour = (day.pxPerHour || 62.2) * scale;
           const numStages = fest.stages.length;
 
           day.slots.forEach(slot => {
             const isSelected = !!selectedSlotIds[slot.id];
             const isClash = !!clashMap[slot.id];
-            const x = (50 + slot.stageIdx * (700 / numStages)) * (W / 800.0);
-            const w = (700 / numStages) * (W / 800.0);
+            const x = (50 + slot.stageIdx * (700 / numStages)) * scale;
+            const w = (700 / numStages) * scale;
             const startMinsFrom12 = timeToMinutes(slot.start) - 12 * 60;
             const endMinsFrom12 = timeToMinutes(slot.end) - 12 * 60;
-            const y = (yBase12 + startMinsFrom12 * (pxPerHour / 60.0)) * (H / 1000.0);
-            const h = ((endMinsFrom12 - startMinsFrom12) * (pxPerHour / 60.0)) * (H / 1000.0);
+            const y = yBase12 + startMinsFrom12 * (pxPerHour / 60.0);
+            const h = (endMinsFrom12 - startMinsFrom12) * (pxPerHour / 60.0);
 
             if (!isSelected && chosen.length > 0) {
-              ctx.fillStyle = "rgba(7, 8, 13, 0.72)";
+              ctx.fillStyle = "rgba(5, 7, 12, 0.75)";
               ctx.fillRect(x + 2, y + 1, w - 4, h - 2);
             } else if (isSelected) {
               ctx.save();
               ctx.strokeStyle = isClash ? "#ef4444" : "#fbbf24";
-              ctx.lineWidth = 4;
-              ctx.shadowColor = isClash ? "rgba(239,68,68,0.95)" : "rgba(251,191,36,0.95)";
-              ctx.shadowBlur = 14;
+              ctx.lineWidth = Math.round(6 * (scale / 2.0));
+              ctx.shadowColor = isClash ? "rgba(239, 68, 68, 0.95)" : "rgba(251, 191, 36, 0.95)";
+              ctx.shadowBlur = Math.round(20 * (scale / 2.0));
               ctx.strokeRect(x + 2, y + 1, w - 4, h - 2);
               ctx.restore();
             }
           });
 
-          ctx.fillStyle = "#090a0f";
-          ctx.fillRect(0, H, W, 56);
+          ctx.fillStyle = "#0b0e17";
+          ctx.fillRect(0, H, W, footerH);
           ctx.fillStyle = "#fbbf24";
-          ctx.font = "900 20px 'Syne', 'Inter', sans-serif";
-          ctx.fillText("FESTCOMPASS", 24, H + 35);
+          ctx.font = `900 ${Math.round(36 * (scale / 2.0))}px 'Syne', sans-serif`;
+          ctx.fillText("FESTCOMPASS", 40 * (scale / 2.0), H + 60 * (scale / 2.0));
           ctx.fillStyle = "#e2e8f0";
-          ctx.font = "bold 15px 'Noto Sans TC', sans-serif";
-          ctx.fillText(`${fest.name}｜${day.label}・已點亮 ${chosen.length} 場演出`, 195, H + 34);
+          ctx.font = `bold ${Math.round(26 * (scale / 2.0))}px 'Noto Sans TC', sans-serif`;
+          ctx.fillText(`${fest.name}｜${day.label}・已點亮 ${chosen.length} 組演出`, 340 * (scale / 2.0), H + 59 * (scale / 2.0));
 
           currentExportDataUrl = canvas.toDataURL("image/png");
           previewImg.src = currentExportDataUrl;
@@ -3546,43 +3583,45 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
         return;
       }
 
-      const W = 1080;
-      const H = 1350;
+      const W = 2160;
+      const H = 2700;
       canvas.width = W;
       canvas.height = H;
       const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
 
-      ctx.fillStyle = "#090a0f";
+      ctx.fillStyle = "#07090e";
       ctx.fillRect(0, 0, W, H);
 
-      ctx.fillStyle = "#121520";
-      ctx.fillRect(0, 0, W, 118);
+      ctx.fillStyle = "#111625";
+      ctx.fillRect(0, 0, W, 220);
       ctx.fillStyle = "#ffffff";
-      ctx.font = "900 34px 'Syne', sans-serif";
-      ctx.fillText("FEST", 40, 56);
+      ctx.font = "900 64px 'Syne', sans-serif";
+      ctx.fillText("FEST", 70, 110);
       ctx.fillStyle = "#fbbf24";
-      ctx.fillText("COMPASS", 128, 56);
+      ctx.fillText("COMPASS", 235, 110);
 
       ctx.fillStyle = "#f8fafc";
-      ctx.font = "bold 24px 'Noto Sans TC', sans-serif";
-      ctx.fillText(`${fest.name} — ${day.label}`, 40, 95);
+      ctx.font = "bold 44px 'Noto Sans TC', sans-serif";
+      ctx.fillText(`${fest.name} — ${day.label}`, 70, 185);
 
       ctx.fillStyle = "#fbbf24";
-      ctx.font = "bold 20px 'Noto Sans TC', sans-serif";
+      ctx.font = "bold 38px 'Noto Sans TC', sans-serif";
       ctx.textAlign = "right";
-      ctx.fillText(`我的必看聽團清單 (${chosen.length} 場)`, W - 40, 62);
+      ctx.fillText(`我的必看聽團清單 (${chosen.length} 場)`, W - 70, 115);
       ctx.fillStyle = "#94a3b8";
-      ctx.font = "15px 'Noto Sans TC', sans-serif";
-      ctx.fillText(fest.location, W - 40, 92);
+      ctx.font = "28px 'Noto Sans TC', sans-serif";
+      ctx.fillText(fest.location, W - 70, 175);
       ctx.textAlign = "left";
 
       const startH = day.startHour || 11;
       const endH = day.endHour || 22;
       const totalHours = endH - startH;
-      const gridLeft = 86;
-      const gridRight = W - 28;
-      const gridTop = 185;
-      const gridBottom = H - 55;
+      const gridLeft = 160;
+      const gridRight = W - 50;
+      const gridTop = 350;
+      const gridBottom = H - 100;
       const colAreaW = gridRight - gridLeft;
       const numStages = fest.stages.length;
       const colW = colAreaW / numStages;
@@ -3590,30 +3629,30 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
 
       fest.stages.forEach((st, idx) => {
         const cx = gridLeft + idx * colW;
-        ctx.fillStyle = "#141824";
-        ctx.fillRect(cx + 3, 132, colW - 6, 42);
+        ctx.fillStyle = "#151b2c";
+        ctx.fillRect(cx + 6, 250, colW - 12, 80);
         ctx.fillStyle = st.color;
-        ctx.fillRect(cx + 3, 132, colW - 6, 4);
+        ctx.fillRect(cx + 6, 250, colW - 12, 8);
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 17px 'Noto Sans TC', sans-serif";
+        ctx.font = "bold 32px 'Noto Sans TC', sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(st.name, cx + colW / 2, 160);
+        ctx.fillText(st.name, cx + colW / 2, 305);
       });
       ctx.textAlign = "left";
 
       for (let h = startH; h <= endH; h++) {
         const y = gridTop + (h - startH) * hourH;
-        ctx.strokeStyle = "#1e2436";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#1d263b";
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(gridLeft, y);
         ctx.lineTo(gridRight, y);
         ctx.stroke();
 
         ctx.fillStyle = "#64748b";
-        ctx.font = "bold 14px monospace";
+        ctx.font = "bold 26px monospace";
         ctx.textAlign = "right";
-        ctx.fillText(String(h).padStart(2, "0") + ":00", gridLeft - 10, y + 5);
+        ctx.fillText(String(h).padStart(2, "0") + ":00", gridLeft - 18, y + 10);
       }
       ctx.textAlign = "left";
 
@@ -3622,37 +3661,39 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
         const isClash = !!clashMap[slot.id];
         const st = fest.stages[slot.stageIdx] || fest.stages[0];
 
-        const x = gridLeft + slot.stageIdx * colW + 4;
-        const w = colW - 8;
+        const x = gridLeft + slot.stageIdx * colW + 8;
+        const w = colW - 16;
         const startMins = timeToMinutes(slot.start) - startH * 60;
         const endMins = Math.max(timeToMinutes(slot.end) - startH * 60, startMins + 25);
-        const y = gridTop + (startMins / 60.0) * hourH + 1;
-        const h = Math.max(((endMins - startMins) / 60.0) * hourH - 3, 30);
+        const y = gridTop + (startMins / 60.0) * hourH + 2;
+        const h = Math.max(((endMins - startMins) / 60.0) * hourH - 5, 56);
 
         ctx.save();
         if (isSelected) {
-          ctx.fillStyle = isClash ? "rgba(239, 68, 68, 0.28)" : "rgba(251, 191, 36, 0.24)";
+          ctx.fillStyle = isClash ? "rgba(239, 68, 68, 0.32)" : "rgba(251, 191, 36, 0.28)";
           ctx.strokeStyle = isClash ? "#ef4444" : "#fbbf24";
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 6;
+          ctx.shadowColor = isClash ? "rgba(239, 68, 68, 0.85)" : "rgba(251, 191, 36, 0.85)";
+          ctx.shadowBlur = 18;
         } else {
-          ctx.fillStyle = chosen.length > 0 ? "rgba(18, 21, 32, 0.45)" : "#151926";
-          ctx.strokeStyle = "#262c40";
-          ctx.lineWidth = 1;
+          ctx.fillStyle = chosen.length > 0 ? "rgba(14, 18, 29, 0.55)" : "#141b2c";
+          ctx.strokeStyle = "#25314a";
+          ctx.lineWidth = 2;
         }
         ctx.fillRect(x, y, w, h);
         ctx.strokeRect(x, y, w, h);
 
         ctx.fillStyle = isSelected ? (isClash ? "#ef4444" : "#fbbf24") : st.color;
-        ctx.fillRect(x, y, 5, h);
+        ctx.fillRect(x, y, 9, h);
 
-        ctx.fillStyle = isSelected ? "#fef08a" : (chosen.length > 0 ? "#64748b" : "#e2e8f0");
-        ctx.font = "bold 14px 'Noto Sans TC', sans-serif";
+        ctx.fillStyle = isSelected ? "#fef08a" : (chosen.length > 0 ? "#64748b" : "#f1f5f9");
+        ctx.font = "bold 26px 'Noto Sans TC', sans-serif";
         const displayArtist = slot.artist.length > 9 ? slot.artist.slice(0, 9) + "…" : slot.artist;
-        ctx.fillText(displayArtist, x + 10, y + 19);
+        ctx.fillText(displayArtist, x + 18, y + 36);
 
         ctx.fillStyle = isSelected ? "#fde047" : "#475569";
-        ctx.font = "12px monospace";
-        ctx.fillText(`${slot.start}-${slot.end}`, x + 10, y + 35);
+        ctx.font = "bold 22px monospace";
+        ctx.fillText(`${slot.start}-${slot.end}`, x + 18, y + 68);
         ctx.restore();
       });
 
@@ -3669,6 +3710,13 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
     }
 
     function openArtistModal(slotId) {
+      const audioBox = document.getElementById("inAppAudioContainer");
+      if (audioBox) {
+        audioBox.querySelectorAll("audio").forEach(a => {
+          try { a.pause(); a.currentTime = 0; } catch (e) {}
+        });
+        audioBox.innerHTML = "";
+      }
       const fest = getCurrentFestival();
       const day = getCurrentDay();
       const slot = day.slots.find(s => s.id === slotId);
@@ -3765,6 +3813,15 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
     function closeArtistModal() {
       document.getElementById("artistModalBackdrop").classList.add("hidden");
       activeModalSlot = null;
+      const audioBox = document.getElementById("inAppAudioContainer");
+      if (audioBox) {
+        audioBox.querySelectorAll("audio").forEach(a => {
+          try { a.pause(); a.currentTime = 0; } catch (e) {}
+        });
+        audioBox.innerHTML = "";
+      }
+      const playerPanel = document.getElementById("inAppPlayerPanel");
+      if (playerPanel) playerPanel.classList.add("hidden");
     }
 
     function renderHeaderNavigation() {
@@ -4681,6 +4738,104 @@ let artistDb = JSON.parse(JSON.stringify(INITIAL_ARTIST_DB));
       window.__lastMoreTs = Date.now();
       const m = document.getElementById("moreMenuDropdown");
       if (m) m.classList.toggle("hidden");
+    };
+
+
+    window.fcDownloadPosterImage = function() {
+      const canvas = document.getElementById("exportPosterCanvas");
+      const fest = getCurrentFestival();
+      const day = getCurrentDay();
+      const dataUrl = currentExportDataUrl || canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `FestCompass_${fest.shortName || fest.name}_${day.date || "Timetable"}_2K.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("已下載 2K 超高解析海報！手機長按下方預覽圖亦可選擇「加入照片」儲存至相簿");
+    };
+
+    window.fcShareToPlatform = async function(platform) {
+      const canvas = document.getElementById("exportPosterCanvas");
+      const fest = getCurrentFestival();
+      const day = getCurrentDay();
+      const shareText = generateShareText();
+
+      if (platform === "save") {
+        window.fcDownloadPosterImage();
+        return;
+      }
+
+      if (platform === "instagram") {
+        try {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+          if (blob && navigator.canShare) {
+            const file = new File([blob], `FestCompass_${day.date || "schedule"}.png`, { type: "image/png" });
+            if (navigator.canShare({ files: [file] })) {
+              copyTextToClipboard(shareText, "已複製聽團清單！正在開啟 Instagram 分享...");
+              await navigator.share({
+                title: `FestCompass｜${fest.name}`,
+                text: shareText,
+                files: [file]
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("IG Web Share fallback:", e);
+        }
+        window.fcDownloadPosterImage();
+        copyTextToClipboard(shareText, "已下載高解析海報圖並複製行程文字！可直接打開 Instagram 限時動態分享");
+        return;
+      }
+
+      if (platform === "threads") {
+        copyTextToClipboard(shareText, "已複製聽團清單！即將開啟 Threads 發文頁面...");
+        window.fcDownloadPosterImage();
+        setTimeout(() => {
+          window.open("https://www.threads.net/intent/post?text=" + encodeURIComponent(shareText), "_blank", "noopener");
+        }, 400);
+        return;
+      }
+
+      if (platform === "line") {
+        copyTextToClipboard(shareText, "已複製聽團清單！即將打開 LINE 分享...");
+        window.fcDownloadPosterImage();
+        setTimeout(() => {
+          window.open("https://line.me/R/msg/text/?" + encodeURIComponent(shareText), "_blank", "noopener");
+        }, 400);
+        return;
+      }
+
+      if (platform === "native") {
+        try {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+          if (blob && navigator.canShare) {
+            const file = new File([blob], `FestCompass_${day.date || "schedule"}.png`, { type: "image/png" });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: `FestCompass｜${fest.name} 我的聽團清單`,
+                text: shareText,
+                files: [file]
+              });
+              showToast("已開啟系統社群分享選單");
+              return;
+            }
+          }
+          if (navigator.share) {
+            await navigator.share({
+              title: `FestCompass｜${fest.name} 我的聽團清單`,
+              text: shareText
+            });
+            showToast("已開啟系統分享選單");
+            return;
+          }
+        } catch (e) {
+          console.warn("Native share fallback:", e);
+        }
+        window.fcDownloadPosterImage();
+        copyTextToClipboard(shareText, "已下載海報並複製行程文字！可直接貼上分享");
+      }
     };
 
     window.fcRefreshPoster = function() {
